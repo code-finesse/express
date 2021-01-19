@@ -1,0 +1,170 @@
+- How does the Web Work
+
+    ---
+
+    - Client-Server
+
+        the web follows a model of communication called ***client-server***
+
+        the browser is the client and the server is what responds to the requests from our browser
+
+        the client and server communicate using Hypertext Transfer Protocol (HTTP) and the ***request-response*** cycle
+
+    - HTTP
+
+        HTTP is a protocol which establishes the rules for communication over the Web
+
+        HTTP dictates how the client requests information from a server and how the server responds.
+
+        Each message is similarly formatted - so you can think of them as like electronic telegrams.
+
+        - Request Basics
+
+            Requests always have these three parts:
+
+            1. Request line (including the URL and the HTTP Method)
+            2. Request header (additional information about the request and what we expect in the response)
+            3. Body message (optional - things like form data)
+
+            Responses in turn always have these three parts:
+
+            1. Status (a status code indicating how the request was handled)
+            2. Response header (additional information about the response)
+            3. Body message (optional - an html document, JSON, XML)
+
+        Clients make requests to a location (called a URL) using a method
+
+        ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/71c199d6-1be4-4052-8af6-96ab5046acbd/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/71c199d6-1be4-4052-8af6-96ab5046acbd/Untitled.png)
+
+        - Methods and Statuses
+
+            There are 10 possible HTTP methods, but the 5 that we'll be focused on are:
+
+            When the server receives a request, it processes the message and then sends a response. The server always sends a response, though sometimes that response is just to tell the client that there was an error.
+
+            The status codes are also defined by the protocol:
+
+## Express
+
+Express is a framework for building web applications and helps us build applications on NodeJS for the Web
+
+Node is the server and Express is the software that it is running on top 
+
+Setting up an Express App
+
+1. create a new directory
+2. change into the directory
+3. initialize a new project and say 'yes' to defaults through terminal by typing ***npm init -y***
+4. install express through terminal by typing  ***npm install express***
+5. install modules in terminal by typing  ***echo node_modules > .gitignore***
+6. create index.js and start coding
+- How to Set Up
+    1. pull in express package
+
+        ```jsx
+        const express = require("express")
+        const app = express()
+
+        // app.get() will go here
+
+        // argument one listen to port 4000
+        // argument two is callback function with what to do after it is running
+        app.listen(4000, () => {
+          console.log("app listening on port 4000")
+        })
+
+        To start up our server, we just need to execute this file with node:
+
+        node index.js
+        ```
+
+    2. handle routes so the browser knows what to "GET" 
+
+        ```jsx
+        // this goes above app.listen() and below express and app variables 
+        app.get('/', (req, res) => {
+          res.send('Hello World')
+        })
+
+        // argument one is path or address
+        // argument two is callback function for what to do if browser goes to that path
+        ```
+
+        **this part is a test and doesn't need to happen every time
+
+    3. install nodemon so we don't have to restart the server every time
+
+        make sure to put dev in script of package.json
+
+        ```jsx
+        // in terminal
+        npm i -D nodemon
+        // -D makes it a dev dependency
+
+        // in package.json
+
+        "scripts": {
+            "test": "echo \"Error: no test specified\" && exit 1",
+            ***"dev": "nodemon index"***
+          },
+        ```
+
+        then in terminal you can type npm run dev to make it like a live server
+
+        OR just type nodemon index.js instead of node index.js to run
+
+    4. check if server works by setting up a dynamic route by adding :name to the end of the route
+
+        ```jsx
+        // this is saying listen to anything and store it in a variable called name (like routerProps)
+        app.get('/:name', (req, res) => {
+          console.log(req.params.name)
+          res.send(`Hello ${req.params.name}`)
+        })
+        ```
+
+    5. use handlebars to create our views
+
+        install handlebars in the terminal: ***npm install hbs***
+
+        ```jsx
+        // sets the view engine to hbs
+        // should be put above app.get() 
+        app.set('view engine', 'hbs')
+        ```
+
+    6. create index.hbs and layout.hbs files in a folder called views 
+
+        this directory should be the in the same root directory as index.js
+
+    7. change app.get( ) to hold render inside
+
+        ```jsx
+        app.get('/:name', (req, res) => {
+          res.render('index', { name: req.params.name })
+        })
+        ```
+
+    8. put boilerplate inside layout.hbs and put handlebar body inside body tag
+
+        ```jsx
+        // layout.hbs
+
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Express Intro</title>
+          </head>
+          <body>
+           {{{body}}}
+          </body>
+        </html>
+        ```
+
+    9. now things can be rendered with index.hbs
+
+        ```jsx
+        // index.hbs
+
+        <h1>Hello {{name}}</h1>
+        ```
